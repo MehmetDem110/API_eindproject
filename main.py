@@ -4,8 +4,12 @@ import models
 import schemas
 from database import SessionLocal, engine, Base
 import crud
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+import auth
 
 models.Base.metadata.create_all(bind=engine)
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 app = FastAPI()
 
@@ -53,3 +57,30 @@ def search_snacks(query: str = None, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Query parameter 'query' is required")
     snacks = crud.search_snacks_by_name(db, query)
     return snacks
+
+@app.post("/token")
+def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+    #Try to authenticate the user
+    user = auth.authenticate_user(db, form_data.username, form_data.password)
+    if not user:
+        raise HTTPException(
+            status_code=401,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    # Add the JWT case sub with the subject(user)
+    access_token = auth.create_access_token(
+        data={"sub": user.email}
+    )
+    #Return the JWT as a bearer token to be placed in the headers
+    return {"access_token": access_token, "token_type": "bearer"}
+
+@app.get("/snacks/", response_model=list[schemas.Snack])
+def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    users = crud.get_snack(db, skip=skip, limit=limit)
+    return users
+
+@app.get("/snacks/me", response_model=schemas.Snack)
+def read_users_me(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    current_user = auth.get_current_active_user(db, token)
+    return current_user
