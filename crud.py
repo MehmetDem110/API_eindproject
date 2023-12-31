@@ -9,6 +9,7 @@ def get_snack(db: Session, snack_id: int):
     return db.query(models.Snack).filter(models.Snack.id == snack_id).first()
 
 def create_snack(db: Session, snack: schemas.SnackCreate):
+    hashed_password = auth.get_password_hash(snack.password)
     db_snack = models.Snack(name=snack.name, description=snack.description)
     db.add(db_snack)
     db.commit()
