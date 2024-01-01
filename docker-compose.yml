@@ -1,7 +1,7 @@
 version: "3.9"
 services:
  useritem-api-service:
-  image: mehmet/python-db-test
+  image: MehmetDem110/API_eindproject
   ports:
     - "8000:8000"
   volumes:
