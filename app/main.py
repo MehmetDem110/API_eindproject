@@ -10,6 +10,8 @@ import os
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 import auth
 
+
+
 if not os.path.exists('.\sqlitedb'):
     os.makedirs('.\sqlitedb')
 

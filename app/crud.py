@@ -36,11 +36,14 @@ def create_user_item(db: Session, item: schemas.ItemCreate, user_id: int):
     db.refresh(db_item)
     return db_item
 
+
 def get_locations(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Location).offset(skip).limit(limit).all()
 
+
 def get_location(db: Session, location_id: int):
     return db.query(models.Location).filter(models.Location.id == location_id).first()
+
 
 def create_location(db: Session, location: schemas.LocationCreate):
     db_location = models.Location(**location.dict())
@@ -48,6 +51,7 @@ def create_location(db: Session, location: schemas.LocationCreate):
     db.commit()
     db.refresh(db_location)
     return db_location
+
 
 def delete_location(db: Session, location_id: int):
     location = db.query(models.Location).filter(models.Location.id == location_id).first()
@@ -57,6 +61,7 @@ def delete_location(db: Session, location_id: int):
         return location
     return None
 
+
 def update_location(db: Session, location_id: int, location: schemas.LocationCreate):
     db_location = db.query(models.Location).filter(models.Location.id == location_id).first()
     if db_location:
@@ -65,3 +70,4 @@ def update_location(db: Session, location_id: int, location: schemas.LocationCre
         db.commit()
         db.refresh(db_location)
     return db_location
+
