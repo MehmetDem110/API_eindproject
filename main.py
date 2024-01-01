@@ -101,3 +101,13 @@ def delete_location(location_id: int, db: Session = Depends(get_db)):
     if not deleted_location:
         raise HTTPException(status_code=404, detail="Location not found")
     return deleted_location
+
+
+@app.put("/locations/{location_id}", response_model=schemas.Location)
+def update_location(location_id: int, location: schemas.LocationCreate, db: Session = Depends(get_db)):
+    db_location = crud.get_location(db=db, location_id=location_id)
+    if db_location is None:
+        raise HTTPException(status_code=404, detail="Location not found")
+
+    updated_location = crud.update_location(db=db, location_id=location_id, location=location)
+    return updated_location
