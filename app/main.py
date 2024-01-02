@@ -6,11 +6,8 @@ import models
 import schemas
 from database import SessionLocal, engine
 import os
-
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 import auth
-
-
 
 if not os.path.exists('.\sqlitedb'):
     os.makedirs('.\sqlitedb')
@@ -21,7 +18,6 @@ models.Base.metadata.create_all(bind=engine)
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 app = FastAPI()
-
 
 # Dependency
 def get_db():
@@ -83,19 +79,23 @@ def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db:
     #Return the JWT as a bearer token to be placed in the headers
     return {"access_token": access_token, "token_type": "bearer"}
 
+
 @app.get("/users/me", response_model=schemas.User)
 def read_users_me(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
     current_user = auth.get_current_active_user(db, token)
     return current_user
+
 
 @app.get("/locations/", response_model=list[schemas.Location])
 def get_locations(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     locations = crud.get_locations(db, skip=skip, limit=limit)
     return locations
 
+
 @app.post("/locations/", response_model=schemas.Location)
 def create_location(location: schemas.LocationCreate, db: Session = Depends(get_db)):
     return crud.create_location(db=db, location=location)
+
 
 @app.delete("/locations/{location_id}", response_model=schemas.Location)
 def delete_location(location_id: int, db: Session = Depends(get_db)):
@@ -103,6 +103,7 @@ def delete_location(location_id: int, db: Session = Depends(get_db)):
     if not deleted_location:
         raise HTTPException(status_code=404, detail="Location not found")
     return deleted_location
+
 
 @app.put("/locations/{location_id}", response_model=schemas.Location)
 def update_location(location_id: int, location: schemas.LocationCreate, db: Session = Depends(get_db)):

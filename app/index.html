@@ -9,11 +9,8 @@
 
 <body x-data="{
     users: [],
-    createUserForm: { email: '', password: '' },
     items: [],
-    createItemForm: { title: '', description: '' },
     locations: [],
-    createLocationForm: { user_id: 0, address: '', statecode: '' },
     fetchUsers: async function() {
         try {
             const response = await fetch('http://127.0.0.1:8000/users');
@@ -24,26 +21,6 @@
             }
         } catch (error) {
             console.error('Error fetching users:', error);
-        }
-    },
-    createUser: async function() {
-        try {
-            const response = await fetch('http://127.0.0.1:8000/users', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(this.createUserForm)
-            });
-            if (response.ok) {
-                console.log('User created successfully');
-                this.createUserForm = { email: '', password: '' }; // Clear form fields
-                this.fetchUsers(); // Refresh users after creating a new user
-            } else {
-                console.error('Failed to create user');
-            }
-        } catch (error) {
-            console.error('Error creating user:', error);
         }
     },
     fetchItems: async function() {
@@ -58,26 +35,6 @@
             console.error('Error fetching items:', error);
         }
     },
-    createItem: async function() {
-        try {
-            const response = await fetch('http://127.0.0.1:8000/items', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(this.createItemForm)
-            });
-            if (response.ok) {
-                console.log('Item created successfully');
-                this.createItemForm = { title: '', description: '' }; // Clear form fields
-                this.fetchItems(); // Refresh items after creating a new item
-            } else {
-                console.error('Failed to create item');
-            }
-        } catch (error) {
-            console.error('Error creating item:', error);
-        }
-    },
     fetchLocations: async function() {
         try {
             const response = await fetch('http://127.0.0.1:8000/locations');
@@ -89,26 +46,6 @@
         } catch (error) {
             console.error('Error fetching locations:', error);
         }
-    },
-    createLocation: async function() {
-        try {
-            const response = await fetch('http://127.0.0.1:8000/locations', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(this.createLocationForm)
-            });
-            if (response.ok) {
-                console.log('Location created successfully');
-                this.createLocationForm = { user_id: 0, address: '', statecode: '' }; // Clear form fields
-                this.fetchLocations(); // Refresh locations after creating a new location
-            } else {
-                console.error('Failed to create location');
-            }
-        } catch (error) {
-            console.error('Error creating location:', error);
-        }
     }
 }">
     <!-- Users Section -->
@@ -118,13 +55,7 @@
             <li x-text="user.email"></li>
         </template>
     </ul>
-
-    <h2>Create User</h2>
-    <form @submit.prevent="createUser">
-        <input type="email" x-model="createUserForm.email" placeholder="Email" required><br>
-        <input type="password" x-model="createUserForm.password" placeholder="Password" required><br>
-        <button type="submit">Create User</button>
-    </form>
+    <button @click="fetchUsers()">Refresh Users</button>
 
     <!-- Items Section -->
     <h1>Items</h1>
@@ -133,13 +64,7 @@
             <li x-text="item.title"></li>
         </template>
     </ul>
-
-    <h2>Create Item</h2>
-    <form @submit.prevent="createItem">
-        <input type="text" x-model="createItemForm.title" placeholder="Title" required><br>
-        <input type="text" x-model="createItemForm.description" placeholder="Description"><br>
-        <button type="submit">Create Item</button>
-    </form>
+    <button @click="fetchItems()">Refresh Items</button>
 
     <!-- Locations Section -->
     <h1>Locations</h1>
@@ -148,14 +73,7 @@
             <li x-text="location.address"></li>
         </template>
     </ul>
-
-    <h2>Create Location</h2>
-    <form @submit.prevent="createLocation">
-        <input type="number" x-model="createLocationForm.user_id" placeholder="User ID" required><br>
-        <input type="text" x-model="createLocationForm.address" placeholder="Address" required><br>
-        <input type="text" x-model="createLocationForm.statecode" placeholder="State Code" required><br>
-        <button type="submit">Create Location</button>
-    </form>
+    <button @click="fetchLocations()">Refresh Locations</button>
 
     <script>
         // Initial fetch when the page loads
