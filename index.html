@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>Alpine.js Frontend for FastAPI CRUD</title>
     <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@2.x.x/dist/alpine.min.js" defer></script>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body x-data="{
@@ -49,31 +50,43 @@
     }
 }">
     <!-- Users Section -->
-    <h1>Users</h1>
-    <ul>
-        <template x-for="user in users" :key="user.id">
-            <li x-text="user.email"></li>
-        </template>
-    </ul>
-    <button @click="fetchUsers()">Refresh Users</button>
+    <div class="container">
+        <div>
+        <h1>Users</h1>
+            <ul>
+                <template x-for="user in users" :key="user.id">
+                    <li x-text="user.email"></li>
+                </template>
+            </ul>
+        <button @click="fetchUsers()">Refresh Users</button>
+    </div>
+
 
     <!-- Items Section -->
-    <h1>Items</h1>
+    <div>
+        <h1>Items</h1>
     <ul>
         <template x-for="item in items" :key="item.id">
             <li x-text="item.title"></li>
         </template>
     </ul>
     <button @click="fetchItems()">Refresh Items</button>
+    </div>
+
 
     <!-- Locations Section -->
-    <h1>Locations</h1>
+    <div>
+        <h1>Locations</h1>
     <ul>
         <template x-for="location in locations" :key="location.id">
             <li x-text="location.address"></li>
         </template>
     </ul>
     <button @click="fetchLocations()">Refresh Locations</button>
+    </div>
+
+    </div>
+
 
     <script>
         // Initial fetch when the page loads
